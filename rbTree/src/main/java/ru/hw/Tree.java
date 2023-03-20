@@ -1,3 +1,5 @@
+package ru.hw;
+
 public class Tree<V extends Comparable<V>> {
     private Node root;
 
@@ -16,6 +18,13 @@ public class Tree<V extends Comparable<V>> {
 
     // добавленееи элемента
     public boolean add(V value) {
+        if (root == null) {
+            root = new Node();
+            root.value = value;
+            root.color = Color.BLACK;
+            return true;
+        }
+
         return addNode(root, value);
     }
 
@@ -27,11 +36,25 @@ public class Tree<V extends Comparable<V>> {
         do {
             needBalance = false;
             if (result.rightChild != null && result.color == Color.RED &&
-                    (result.leftChild != null || result.leftChild.color == Color.BLACK)) {
+                    (result.leftChild == null || result.leftChild.color == Color.BLACK)) {
                 needBalance = true;
                 result = rightTurn(result);
             }
-        } while ();
+
+            if (result.leftChild != null && result.leftChild.color == Color.RED &&
+                    result.leftChild.leftChild != null && result.leftChild.leftChild.color == Color.RED) {
+                needBalance = true;
+                result = leftTurn(result);
+            }
+
+            if (result.leftChild != null && result.leftChild.color == Color.RED &&
+                    result.rightChild != null && result.rightChild.color == Color.RED) {
+                needBalance = true;
+                colorSwap(result);
+            }
+        } while (needBalance);
+
+        return result;
     }
 
     private boolean addNode(Node node, V value) {
